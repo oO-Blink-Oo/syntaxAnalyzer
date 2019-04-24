@@ -43,12 +43,12 @@ variables needed:
 currChar
 */
 string test();
-void E();
-void T();
-void Q();
-void R();
-void F();
-void Eps();
+bool E();
+bool T();
+bool Q();
+bool R();
+bool F();
+bool Eps();
 
 string test() {
 	string userInput;
@@ -57,30 +57,63 @@ string test() {
 	return userInput;
 }
 
-int main() {
-
-	//outputting to a file
-	string outName = "out.txt";
-	ofstream outFile(outName);
-	
-	//strings to be tested
-	string a = "a = b + c";
-	string b = "a = b + c;";
-	string c = "a = b + c ;";
-	string d = "a=b+c";
-	string e = "a=b+c;";
-
-	//string stringExp = test(); // string that is being tested for syntax
-	vector<tokenType> tokens; // holds the lexed stringExp
-
-	tokens = lexer(a); // replace with stringExp after testing is done
-
-	for (size_t i = 0; i < tokens.size(); ++i) {
-		if (tokens[i].lexemeName != "COMMENT") {
-			cout << setw(15) << left << tokens[i].lexemeName << " =" << setw(15) << right << tokens[i].token << endl; // use outFile when done testing
+bool E() {
+	bool flag = false;
+	if (T()) {
+		if (Q()) {
+			cout << "E -> TQ\n";
+			flag = true;
 		}
-
 	}
+}
+
+bool Q() {
+	char currentChar = ' ';
+	bool flag = false;
+	currentChar = 
+}
+
+int main() {
+	//variables needed
+	string userString = test(); // get a string input to be analyzed 
+	vector<tokenType> tokens = lexer(userString);    //vector to hold tokens as they are being inputted
+
+	int tokenIndex = 0;  //Index used to step through token vector
+
+	bool printSwitch = true;
+
+	vector<tokenType> tokenList; //vector that holds all tokens once they have been read in initially
+	tokenType currentToken;
+
+	//emter root node now
 
 	return 0;
 }
+
+//int main() {
+//
+//	//outputting to a file
+//	string outName = "out.txt";
+//	ofstream outFile(outName);
+//	
+//	//strings to be tested
+//	string a = "a = b + c";
+//	string b = "a = b + c;";
+//	string c = "a = b + c ;"; //perfect case
+//	string d = "a=b+c";
+//	string e = "a=b+c;";
+//
+//	//string stringExp = test(); // string that is being tested for syntax
+//	vector<tokenType> tokens; // holds the lexed stringExp
+//
+//	tokens = lexer(e); // replace with stringExp after testing is done
+//
+//	for (size_t i = 0; i < tokens.size(); ++i) {
+//		if (tokens[i].lexemeName != "COMMENT") {
+//			cout << setw(15) << left << tokens[i].lexemeName << " =" << setw(15) << right << tokens[i].token << endl; // use outFile when done testing
+//		}
+//
+//	}
+//
+//	return 0;
+//}
