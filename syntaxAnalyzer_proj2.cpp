@@ -70,7 +70,70 @@ bool E() {
 bool Q() {
 	char currentChar = ' ';
 	bool flag = false;
-	currentChar = 
+	//currentChar = token;
+	if (currentChar == '+') {
+		if (T()) {
+			if (Q()) {
+				cout << "Q -> +TQ\n";
+				flag = false;
+			}
+		}
+		else
+			if (currentChar == ')' || currentChar == '$') {
+				//backup;
+				cout << "Q -> eps\n";
+				flag = true;
+			}
+	}
+}
+
+bool T() {
+	bool flag = false;
+	if (F()) {
+		if (R()) {
+			cout << "T -> FR'\n";
+			flag = false;
+		}
+	}
+}
+
+bool R() {
+	char currentChar = ' ';
+	bool flag = false;
+	//currentChar = token;
+	if (currentChar == '*') {
+		if(F())
+			if (R()) {
+				cout << "R -> *FR\n";
+				flag = false;
+			}
+	}
+	else
+		if (currentChar == '+' || currentChar == ')' || currentChar == '$') {
+			cout << "R -> eps\n";
+			//backup;
+			flag = true;
+		}
+
+}
+
+bool F() {
+	char currentChar = ' ';
+	bool flag = false;
+	//currentChar = token;
+	if (/*currentChar == 'a' to 'z'*/) {
+		cout << "F -> id'\n";
+		flag = true;
+	}else
+		if (currentChar = ')') {
+			if (E()) {
+				//currentChar = token;
+			}
+			if (currentChar = ')') {
+				cout << "F -> (E)'\n";
+				flag = true;
+			}
+		}
 }
 
 int main() {
