@@ -4,17 +4,17 @@
 #include <string>
 #include <iomanip>
 #include <stdio.h>
-
+#include "Lexer.h"
 
 using namespace std;
 
 
-struct tokenType {
-	string token; // token name for the lexeme
-	int lexeme;
-	string lexemeName; // this prints out the actual lexeme character
-
-};
+//struct tokenType {
+//	string token; // token name for the lexeme
+//	int lexeme;
+//	string lexemeName; // this prints out the actual lexeme character
+//
+//};
 
 //FSM table
 int stateFSM[13][24] = { 

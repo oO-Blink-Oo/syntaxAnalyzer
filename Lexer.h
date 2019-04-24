@@ -5,18 +5,22 @@
 #include <string>
 #include <iomanip>
 #include <stdio.h>
-#include "Project1_Lex.cpp"
+
 
 using namespace std;
 
 
-class LA {
-public:
-	//LA();
-	vector<tokenType> lexer(string words);
-	int getFsmCol(char currentChar);
-	string getLexemeName(int lexeme);
-}
+struct tokenType {
+	string token; // token name for the lexeme
+	int lexeme;
+	string lexemeName; // this prints out the actual lexeme character
+
+};
+
+vector<tokenType> lexer(string words);
+int getFsmCol(char currentChar);
+string getLexemeName(int lexeme);
+
 
 //struct tokenType {
 //	string token; // token name for the lexeme
