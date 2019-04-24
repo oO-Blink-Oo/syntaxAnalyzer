@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <stdio.h>
 
+
 using namespace std;
 
 
@@ -32,44 +33,44 @@ int stateFSM[13][24] = {
 /*Fstate 12*/ {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} };
 
 //FUNCTION PROTOTYPES
-vector<tokenType> lexer(string words);
-int getFsmCol(char currentChar);
-string getLexemeName(int lexeme);
+//vector<tokenType> lexer(string words);
+//int getFsmCol(char currentChar);
+//string getLexemeName(int lexeme);
 
-int main() {
-
-	string input;
-	cout << "Please input the name of the file you wish to analyze (please have .txt at the end of name)" << endl;
-	cin >> input;
-	ifstream inFile(input);
-
-	if (!inFile.is_open()) {
-		cout << "The file was not opened properly!\n";
-		exit(1);
-	}
-
-	string stringExp = "";
-	vector<tokenType> tokens;
-
-	cout << setw(15) << left << "TOKENS:" <<  setw(18) << right << "LEXEMES:" << endl;
-	cout << endl;
-
-	while (getline(inFile, stringExp)) { //getline(inFile,stringExp) 
-		tokens = lexer(stringExp);
-
-		//print out tokens vector
-		for (size_t i = 0; i < tokens.size(); ++i) {
-			if (tokens[i].lexemeName != "COMMENT") {
-				cout << setw(15) << left << tokens[i].lexemeName << " =" << setw(15) << right << tokens[i].token << endl;
-			}
-
-		}
-	}
-
-	inFile.close();
-	system("pause");
-	return 0;
-}
+//int main() {
+//
+//	string input;
+//	cout << "Please input the name of the file you wish to analyze (please have .txt at the end of name)" << endl;
+//	cin >> input;
+//	ifstream inFile(input);
+//
+//	if (!inFile.is_open()) {
+//		cout << "The file was not opened properly!\n";
+//		exit(1);
+//	}
+//
+//	string stringExp = "";
+//	vector<tokenType> tokens;
+//
+//	cout << setw(15) << left << "TOKENS:" <<  setw(18) << right << "LEXEMES:" << endl;
+//	cout << endl;
+//
+//	while (getline(inFile, stringExp)) { //getline(inFile,stringExp) 
+//		tokens = lexer(stringExp);
+//
+//		//print out tokens vector
+//		for (size_t i = 0; i < tokens.size(); ++i) {
+//			if (tokens[i].lexemeName != "COMMENT") {
+//				cout << setw(15) << left << tokens[i].lexemeName << " =" << setw(15) << right << tokens[i].token << endl;
+//			}
+//
+//		}
+//	}
+//
+//	inFile.close();
+//	system("pause");
+//	return 0;
+//}
 
 
 vector<tokenType> lexer(string words) {
@@ -101,7 +102,7 @@ vector<tokenType> lexer(string words) {
 			currentToken += currentChar; //adds a validated character into the token for it to be pushed into the tokens vector later
 			break;
 		case 2: //keyword state, branches out to identifier if isKey is false
-			for (int i = 0; i < keywords.size(); i++) {
+			for (size_t i = 0; i < keywords.size(); i++) {
 				if (currentToken == keywords[i]) {
 					acc.token = currentToken;
 					acc.lexeme = 0;
@@ -295,6 +296,7 @@ int getFsmCol(char currentChar) {
 		break;
 	default:
 		cout << "default case" << endl;
+		return 2; // trying to return something
 		break;
 	}
 
