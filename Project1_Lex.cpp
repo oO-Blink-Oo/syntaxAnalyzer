@@ -8,14 +8,6 @@
 
 using namespace std;
 
-
-//struct tokenType {
-//	string token; // token name for the lexeme
-//	int lexeme;
-//	string lexemeName; // this prints out the actual lexeme character
-//
-//};
-
 //FSM table
 int stateFSM[13][24] = { 
  /*state 0*/  {1, 3, 2 ,5, 6, 0, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 8, 8, 8, 8, 8, 8, 8, 8},
@@ -32,45 +24,6 @@ int stateFSM[13][24] = {
 /*state 11*/  {11, 11, 12, 10, 10, 12, 10, 8, 12, 10, 10, 10, 10, 12, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
 /*Fstate 12*/ {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} };
 
-//FUNCTION PROTOTYPES
-//vector<tokenType> lexer(string words);
-//int getFsmCol(char currentChar);
-//string getLexemeName(int lexeme);
-
-//int main() {
-//
-//	string input;
-//	cout << "Please input the name of the file you wish to analyze (please have .txt at the end of name)" << endl;
-//	cin >> input;
-//	ifstream inFile(input);
-//
-//	if (!inFile.is_open()) {
-//		cout << "The file was not opened properly!\n";
-//		exit(1);
-//	}
-//
-//	string stringExp = "";
-//	vector<tokenType> tokens;
-//
-//	cout << setw(15) << left << "TOKENS:" <<  setw(18) << right << "LEXEMES:" << endl;
-//	cout << endl;
-//
-//	while (getline(inFile, stringExp)) { //getline(inFile,stringExp) 
-//		tokens = lexer(stringExp);
-//
-//		//print out tokens vector
-//		for (size_t i = 0; i < tokens.size(); ++i) {
-//			if (tokens[i].lexemeName != "COMMENT") {
-//				cout << setw(15) << left << tokens[i].lexemeName << " =" << setw(15) << right << tokens[i].token << endl;
-//			}
-//
-//		}
-//	}
-//
-//	inFile.close();
-//	system("pause");
-//	return 0;
-//}
 
 
 vector<tokenType> lexer(string words) {
@@ -296,7 +249,7 @@ int getFsmCol(char currentChar) {
 		break;
 	default:
 		cout << "default case" << endl;
-		return 2; // trying to return something
+		//return 2; // trying to return something
 		break;
 	}
 

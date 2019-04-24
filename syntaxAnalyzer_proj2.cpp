@@ -53,7 +53,7 @@ void Eps();
 string test() {
 	string userInput;
 	cout << "Please input a string to be tested for syntax analysis.\n";
-	cin >> userInput;
+	getline(cin, userInput);
 	return userInput;
 }
 
@@ -63,10 +63,17 @@ int main() {
 	string outName = "out.txt";
 	ofstream outFile(outName);
 	
-	string stringExp = test(); // string that is being tested for syntax
+	//strings to be tested
+	string a = "a = b + c";
+	string b = "a = b + c;";
+	string c = "a = b + c ;";
+	string d = "a=b+c";
+	string e = "a=b+c;";
+
+	//string stringExp = test(); // string that is being tested for syntax
 	vector<tokenType> tokens; // holds the lexed stringExp
 
-	tokens = lexer(stringExp);
+	tokens = lexer(a); // replace with stringExp after testing is done
 
 	for (size_t i = 0; i < tokens.size(); ++i) {
 		if (tokens[i].lexemeName != "COMMENT") {
@@ -75,6 +82,5 @@ int main() {
 
 	}
 
-	system("pause");
 	return 0;
 }
