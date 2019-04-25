@@ -64,6 +64,7 @@ string test();
 bool checkTerminal(char c);
 void errorMessage();
 int getCharacterCol(char c);
+char lexConvert(string s);
 
 string test() {
 	string userInput;
@@ -124,6 +125,11 @@ int getCharacterCol(char c) {
 	}
 }
 
+char lexConvert(string s) {
+	if (s == "IDENTIFIER" ) {
+		return 'i';
+	}
+}
 
 string predictiveTable[5][8] = { 
 		/* +       -      *      /     (     )     i     $  */
@@ -154,7 +160,7 @@ int main() {
 	vector<tokenType> tokens; // holds the lexed stringExp
 	tokens = lexer(c); // replace with stringExp after testing is done
 	stack<char> productionStack; // stack that holds the Production rules to be processed
-	int charPointer = 0; // to be incremented once the right character has been popped
+	int tokenPointer = 0; // to be incremented once the right character has been popped
 	//char incomingToken;
 
 	productionStack.push('$');//push $ onto the stack
@@ -164,12 +170,12 @@ int main() {
 	
 	while (productionStack.size() != 0) { //while the stack is not empty
 		char topOfStack = productionStack.top();
-		char currentChar = c[charPointer];
-
-		int charCol = getCharacterCol(currentChar);
+		tokenType currentToken = tokens[tokenPointer];
+		//make function that replaces IDENTIFIER TO i
+		int charCol = getCharacterCol(lexConvert(currentToken.token));
 
 		if (checkTerminal(topOfStack)) { // if terminal
-			if (topOfStack == c[charPointer]) {
+			if (topOfStack == currentToken.lexemeName) { //PROBLEM HERE
 				//pop stack and go to next input token
 				productionStack.pop();
 				charPointer++;
