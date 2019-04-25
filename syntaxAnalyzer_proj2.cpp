@@ -61,10 +61,12 @@ enum NonTerminals {
 
 //FUNCTION PROTOTYPES:
 string test();
-bool checkTerminal(char c);
+bool checkTerminal(string s);
 void errorMessage();
 int getCharacterCol(char c);
+int getProdRow(string s);
 char lexConvert(string s);
+
 
 string test() {
 	string userInput;
@@ -73,9 +75,9 @@ string test() {
 	return userInput;
 }
 
-bool checkTerminal(char c) {
+bool checkTerminal(string c) {
 	bool flag = false;
-	vector<char> terminals{ '+', '-', '*', '/', '(', ')', 'i', '$' };
+	vector<string> terminals{ "+", "-", "*", "/", "(", ")", "i", "$" };
 	for (size_t i = 0; i < terminals.size(); i++) {
 		if (c == terminals[i]) {
 			flag = true;
@@ -85,7 +87,7 @@ bool checkTerminal(char c) {
 }
 
 void errorMessage() {
-	cout << "This string is not acceptable according to the production rules being used.\n";
+	cout << "ERROR ERROR ERROR.\n";
 }
 
 int getCharacterCol(char c) {
@@ -120,7 +122,7 @@ int getCharacterCol(char c) {
 		return 7;
 		break;
 	default:
-		cout << "This is a default case.\n";
+		cout << "This is a default case for getCharacterCol.\n";
 		break;
 	}
 }
@@ -128,6 +130,31 @@ int getCharacterCol(char c) {
 char lexConvert(string s) {
 	if (s == "IDENTIFIER" ) {
 		return 'i';
+	}
+}
+
+int getProdRow(string s) {
+	
+	switch (s[0]) {
+
+	case 'E':
+		return 0;
+		break;
+	case 'Q':
+		return 1;
+		break;
+	case 'T':
+		return 2;
+		break;
+	case 'R':
+		return 3;
+		break;
+	case 'F':
+		return 4;
+		break;
+	default:
+		cout << "This is a default case for getProdRow";
+		break;
 	}
 }
 
@@ -159,39 +186,46 @@ int main() {
 	
 	vector<tokenType> tokens; // holds the lexed stringExp
 	tokens = lexer(c); // replace with stringExp after testing is done
-	stack<char> productionStack; // stack that holds the Production rules to be processed
+	stack<string> productionStack; // stack that holds the Production rules to be processed
 	int tokenPointer = 0; // to be incremented once the right character has been popped
 	//char incomingToken;
 
-	productionStack.push('$');//push $ onto the stack
+	productionStack.push("$");//push $ onto the stack
 	c.push_back('$'); // push a $ at the end of the stringExp in this case string c
-	productionStack.push('E');//Push the root node in the stack
+	productionStack.push("E");//Push the root node in the stack
 	
 	
 	while (productionStack.size() != 0) { //while the stack is not empty
-		char topOfStack = productionStack.top();
+		string topOfStack = productionStack.top();
 		tokenType currentToken = tokens[tokenPointer];
-		//make function that replaces IDENTIFIER TO i
-		int charCol = getCharacterCol(lexConvert(currentToken.token));
+		
+		//char convertedID = lexConvert(currentToken.lexemeName);//make function that replaces IDENTIFIER TO i
+		
+		int charCol = getCharacterCol(lexConvert(currentToken.lexemeName));
+		int prodRow = getProdRow(topOfStack);
 
 		if (checkTerminal(topOfStack)) { // if terminal
 			if (topOfStack == currentToken.lexemeName) { //PROBLEM HERE
 				//pop stack and go to next input token
 				productionStack.pop();
-				charPointer++;
+				tokenPointer++;
 			} else {
 				errorMessage(); //error
 			}
 		} else {
-			if (predictiveTable[topOfStack][charCol] != " ") { // not blank therefore there is a production rule associated on the right side
+
+			if (predictiveTable[prodRow][charCol] != " ") { // not blank therefore there is a production rule associated on the right side
 				string ruleFromTable = " ";
-				ruleFromTable = predictiveTable[topOfStack][charCol]; //this has the production rule now
+				ruleFromTable = predictiveTable[prodRow][charCol]; //this has the production rule now
 				productionStack.pop(); // pops the top of the stack
 				reverse(ruleFromTable.begin(), ruleFromTable.end());//reverse the order of the rule inside the table then push it
 				
-				for (size_t i = 0; i < ruleFromTable.size(); i++) {
+				//cout << "PRINT SOMETHING\n";
+
+				/*for (size_t i = 0; i < ruleFromTable.size(); i++) {
 					productionStack.push(ruleFromTable[i]);
-				}
+				}*/
+
 				
 			} else {
 				errorMessage();
