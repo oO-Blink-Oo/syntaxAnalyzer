@@ -29,12 +29,18 @@ R = {
 		R -> *FR | /FR | ep
 		F -> (E) | i
 }
+
+stack holds the reverse order of production rules
+a is incoming token
+
 */
 
 
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <stack>
+#include <algorithm>
 #include "Lexer.h"
 
 using namespace std;
@@ -42,13 +48,23 @@ using namespace std;
 variables needed:
 currChar
 */
+
+enum NonTerminals {
+	E = 0,
+	Q = 1,
+	T = 2,
+	R = 3,
+	F = 4,
+	ERROR = 5
+};
+
+
+//FUNCTION PROTOTYPES:
 string test();
-bool E();
-bool T();
-bool Q();
-bool R();
-bool F();
-bool Eps();
+bool checkTerminal(char c);
+void errorMessage();
+int getCharacterCol(char c);
+string reverseString(string s);
 
 string test() {
 	string userInput;
@@ -57,126 +73,147 @@ string test() {
 	return userInput;
 }
 
-bool E() {
+bool checkTerminal(char c) {
 	bool flag = false;
-	if (T()) {
-		if (Q()) {
-			cout << "E -> TQ\n";
+	vector<char> terminals{ '+', '-', '*', '/', '(', ')', 'i', '$' };
+	for (size_t i = 0; i < terminals.size(); i++) {
+		if (c == terminals[i]) {
 			flag = true;
 		}
 	}
+	return flag;
 }
 
-bool Q() {
-	char currentChar = ' ';
-	bool flag = false;
-	//currentChar = token;
-	if (currentChar == '+') {
-		if (T()) {
-			if (Q()) {
-				cout << "Q -> +TQ\n";
-				flag = false;
-			}
-		}
-		else
-			if (currentChar == ')' || currentChar == '$') {
-				//backup;
-				cout << "Q -> eps\n";
-				flag = true;
-			}
+void errorMessage() {
+	cout << "This string is not acceptable according to the production rules being used.\n";
+}
+
+int getCharacterCol(char c) {
+	switch (c)
+	{
+	case '+':
+		return 0;
+		break;
+
+	case '-':
+		return 1;
+		break;
+
+	case '*':
+		return 2;
+		break;
+
+	case '/':
+		return 3;
+		break;
+
+	case '(':
+		return 4;
+		break;
+	case ')':
+		return 5;
+		break;
+	case 'i':
+		return 6;
+		break;
+	case '$':
+		return 7;
+		break;
+	default:
+		cout << "This is a default case.\n";
+		break;
 	}
 }
 
-bool T() {
-	bool flag = false;
-	if (F()) {
-		if (R()) {
-			cout << "T -> FR'\n";
-			flag = false;
-		}
-	}
-}
-
-bool R() {
-	char currentChar = ' ';
-	bool flag = false;
-	//currentChar = token;
-	if (currentChar == '*') {
-		if(F())
-			if (R()) {
-				cout << "R -> *FR\n";
-				flag = false;
-			}
-	}
-	else
-		if (currentChar == '+' || currentChar == ')' || currentChar == '$') {
-			cout << "R -> eps\n";
-			//backup;
-			flag = true;
-		}
+string reverseString(string s) {
+	string revString = ""; //reversed string
 
 }
 
-bool F() {
-	char currentChar = ' ';
-	bool flag = false;
-	//currentChar = token;
-	if (/*currentChar == 'a' to 'z'*/) {
-		cout << "F -> id'\n";
-		flag = true;
-	}else
-		if (currentChar = ')') {
-			if (E()) {
-				//currentChar = token;
-			}
-			if (currentChar = ')') {
-				cout << "F -> (E)'\n";
-				flag = true;
-			}
-		}
-}
+string predictiveTable[5][8] = { 
+		/* +       -      *      /     (     )     i     $  */
+	/*E*/{" ",    " ",   " ",   " ",  "TQ", " ",  "TQ", " "},
+	/*Q*/{"+TQ","-TQ",   " ",   " ",   " ", "Z",   " ", "Z"},
+	/*T*/{" ",    " ",   " ",   " ",  "FR", " ",  "FR", " "},
+	/*R*/{"Z",    "Z", "*FR", "/FR",   " ", "Z",   " ", "Z"},
+	/*F*/{" ",    " ",   " ",   " ", "(E)", " ",   "i", " "}
+};
+
 
 int main() {
-	//variables needed
-	string userString = test(); // get a string input to be analyzed 
-	vector<tokenType> tokens = lexer(userString);    //vector to hold tokens as they are being inputted
 
-	int tokenIndex = 0;  //Index used to step through token vector
+	//outputting to a file
+	string outName = "out.txt";
+	ofstream outFile(outName);
+	
+	//strings to be tested
+	string a = "a = b + c";
+	string b = "a = b + c;";
+	string c = "a = b + c ;"; //perfect case
+	string d = "a=b+c";
+	string e = "a=b+c;";
 
-	bool printSwitch = true;
+	//VARIABLES NEEDED
+	//string stringExp = test(); // string that is being tested for syntax
+	
+	vector<tokenType> tokens; // holds the lexed stringExp
+	tokens = lexer(c); // replace with stringExp after testing is done
+	stack<char> productionStack; // stack that holds the Production rules to be processed
+	int charPointer = 0; // to be incremented once the right character has been popped
+	char incomingToken;
 
-	vector<tokenType> tokenList; //vector that holds all tokens once they have been read in initially
-	tokenType currentToken;
+	productionStack.push('$');//push $ onto the stack
+	c.push_back('$'); // push a $ at the end of the stringExp in this case string c
+	productionStack.push('E');//Push the root node in the stack
+	
+	
+	while (productionStack.size() != 0) { //while the stack is not empty
+		char topOfStack = productionStack.top();
+		char currentChar = c[charPointer];
 
-	//emter root node now
+		int charCol = getCharacterCol(currentChar);
+
+		if (checkTerminal(topOfStack)) { // if terminal
+			if (topOfStack == c[charPointer]) {
+				//pop stack and go to next input token
+				productionStack.pop();
+				charPointer++;
+			} else {
+				errorMessage(); //error
+			}
+		} else {
+			if (predictiveTable[topOfStack][charCol] != " ") { // not blank therefore there is a production rule associated on the right side
+				productionStack.pop(); // pops the top of the stack
+				//reverse the order of the rule inside the table then push it
+				productionStack.push()
+			}
+		}
+	}
 
 	return 0;
 }
 
+
 //int main() {
+//	//variables needed
+//	string userString = test(); // get a string input to be analyzed 
+//	vector<tokenType> tokens = lexer(userString);    //vector to hold tokens as they are being inputted
 //
-//	//outputting to a file
-//	string outName = "out.txt";
-//	ofstream outFile(outName);
-//	
-//	//strings to be tested
-//	string a = "a = b + c";
-//	string b = "a = b + c;";
-//	string c = "a = b + c ;"; //perfect case
-//	string d = "a=b+c";
-//	string e = "a=b+c;";
+//	int tokenIndex = 0;  //Index used to step through token vector
 //
-//	//string stringExp = test(); // string that is being tested for syntax
-//	vector<tokenType> tokens; // holds the lexed stringExp
+//	bool printSwitch = true;
 //
-//	tokens = lexer(e); // replace with stringExp after testing is done
+//	vector<tokenType> tokenList; //vector that holds all tokens once they have been read in initially
+//	tokenType currentToken;
 //
-//	for (size_t i = 0; i < tokens.size(); ++i) {
-//		if (tokens[i].lexemeName != "COMMENT") {
-//			cout << setw(15) << left << tokens[i].lexemeName << " =" << setw(15) << right << tokens[i].token << endl; // use outFile when done testing
-//		}
-//
-//	}
+//	//emter root node now
 //
 //	return 0;
+//}
+
+//for (size_t i = 0; i < tokens.size(); ++i) {
+//	if (tokens[i].lexemeName != "COMMENT") {
+//		cout << setw(15) << left << tokens[i].lexemeName << " =" << setw(15) << right << tokens[i].token << endl; // use outFile when done testing
+//	}
+//
 //}
