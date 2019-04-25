@@ -64,7 +64,6 @@ string test();
 bool checkTerminal(char c);
 void errorMessage();
 int getCharacterCol(char c);
-string reverseString(string s);
 
 string test() {
 	string userInput;
@@ -125,10 +124,6 @@ int getCharacterCol(char c) {
 	}
 }
 
-string reverseString(string s) {
-	string revString = ""; //reversed string
-
-}
 
 string predictiveTable[5][8] = { 
 		/* +       -      *      /     (     )     i     $  */
@@ -160,7 +155,7 @@ int main() {
 	tokens = lexer(c); // replace with stringExp after testing is done
 	stack<char> productionStack; // stack that holds the Production rules to be processed
 	int charPointer = 0; // to be incremented once the right character has been popped
-	char incomingToken;
+	//char incomingToken;
 
 	productionStack.push('$');//push $ onto the stack
 	c.push_back('$'); // push a $ at the end of the stringExp in this case string c
@@ -183,9 +178,17 @@ int main() {
 			}
 		} else {
 			if (predictiveTable[topOfStack][charCol] != " ") { // not blank therefore there is a production rule associated on the right side
+				string ruleFromTable = " ";
+				ruleFromTable = predictiveTable[topOfStack][charCol]; //this has the production rule now
 				productionStack.pop(); // pops the top of the stack
-				//reverse the order of the rule inside the table then push it
-				productionStack.push()
+				reverse(ruleFromTable.begin(), ruleFromTable.end());//reverse the order of the rule inside the table then push it
+				
+				for (size_t i = 0; i < ruleFromTable.size(); i++) {
+					productionStack.push(ruleFromTable[i]);
+				}
+				
+			} else {
+				errorMessage();
 			}
 		}
 	}
