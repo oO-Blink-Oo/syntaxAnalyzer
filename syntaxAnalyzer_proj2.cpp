@@ -23,6 +23,7 @@ R = {
 	// Q is like E'
 	// R is like T'
 		S -> i = E
+
 		E -> TQ       // E -> TE'
 		Q -> +TQ | -TQ | ep
 		T -> FR		 // T -> FT'
@@ -78,6 +79,7 @@ enum Symbols {
 	N_F
 };
 
+Symbols translateSymbol(char c);
 
 //FUNCTION PROTOTYPES:
 string test();
@@ -86,6 +88,7 @@ void errorMessage();
 int getCharacterCol(char c);
 int getProdRow(string s);
 char lexConvert(string s);
+Symbols translateSymbol(char c);
 
 
 string test() {
@@ -187,6 +190,21 @@ string predictiveTable[5][8] = {
 	/*F*/{" ",    " ",   " ",   " ", "(E)", " ",   "i", " "}
 };
 
+Symbols translateSymbol(char c) {
+	switch (c)
+	{
+		case '+': return T_PLUS;
+		case '-': return T_MINUS;
+		case '*': return T_ASTER;
+		case '/': return T_DIVI;
+		case '(': return T_L_PARENS;
+		case ')': return T_R_PARENS;
+		case 'i': return T_I;
+		case '$': return T_EOS;
+		default:
+			break;
+	}
+}
 
 int main() {
 

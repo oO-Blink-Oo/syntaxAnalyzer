@@ -113,6 +113,8 @@ int main() {
 
 			switch (table[ss.top()][translateSymbol(userString[charPointer])])
 			{
+				
+			
 			case 0:		// 0. E -> TQ
 				break;
 			case 1:		// 1. Q -> +TQ
@@ -121,17 +123,34 @@ int main() {
 				break;
 			case 3:		// 3. Q -> Eps
 				break;
-			case 4:		// 4. T -> FR 
+			case 4:		// 4. T -> FR
+				ss.pop();
+				ss.push(N_R);	// R
+				ss.push(N_F);	// F
 				break;
 			case 5:		// 5. R -> *FR
+				ss.pop();
+				ss.push(N_R);	 // R
+				ss.push(N_F);	 // F
+				ss.push(T_ASTER);// *
 				break;
 			case 6:		// 6. R -> /FR
+				ss.pop();
+				ss.push(N_R);	// R
+				ss.push(N_F);	// F
+				ss.push(T_DIVI); // /
 				break;
 			case 7:		// 7. R -> Eps
 				break;
 			case 8:		// 8. F -> (E)
+				ss.pop();
+				ss.push(T_R_PARENS);	// )
+				ss.push(N_E);			// E
+				ss.push(T_L_PARENS);	// (
 				break;
 			case 9:		// 9. F -> i
+				ss.pop();
+				ss.push(T_I);
 				break;
 			
 			default:
