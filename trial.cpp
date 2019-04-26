@@ -116,10 +116,24 @@ int main() {
 				
 			
 			case 0:		// 0. E -> TQ
+				ss.pop();
+				ss.push(N_E); //E
+				ss.push(N_Q); //Q
+				ss.push(N_T); //T
 				break;
 			case 1:		// 1. Q -> +TQ
+				ss.pop();
+				ss.push(N_Q); //Q
+				ss.push(N_Q); //Q
+				ss.push(N_T); //T
+				ss.push(T_PLUS); //+
 				break;
 			case 2:		// 2. Q -> -TQ
+				ss.pop();
+				ss.push(N_Q); //Q
+				ss.push(N_Q); //Q
+				ss.push(N_T); //T
+				ss.push(T_MINUS); //-
 				break;
 			case 3:		// 3. Q -> Eps
 				break;
