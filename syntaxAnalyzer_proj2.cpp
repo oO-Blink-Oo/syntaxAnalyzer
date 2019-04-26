@@ -49,13 +49,33 @@ variables needed:
 currChar
 */
 
-enum NonTerminals {
-	E = 0,
-	Q = 1,
-	T = 2,
-	R = 3,
-	F = 4,
-	ERROR = 5
+//enum NonTerminals {
+//	E = 0,
+//	Q = 1,
+//	T = 2,
+//	R = 3,
+//	F = 4,
+//	ERROR = 5
+//};
+
+enum Symbols {
+	//TERMINAL SYMBOLS:
+	T_PLUS,			// +
+	T_MINUS,		// -
+	T_ASTER,		// *
+	T_DIVI,			// /
+	T_L_PARENS,		// (
+	T_R_PARENS,		// )
+	T_I,			// i
+	T_EOS,			// $
+	T_ERROR,
+	
+	//NONTERMINAL SYMBOLS:
+	N_E,
+	N_Q,
+	N_T,
+	N_R,
+	N_F
 };
 
 
@@ -221,10 +241,10 @@ int main() {
 				reverse(ruleFromTable.begin(), ruleFromTable.end());//reverse the order of the rule inside the table then push it
 				
 				//cout << "PRINT SOMETHING\n";
-
-				/*for (size_t i = 0; i < ruleFromTable.size(); i++) {
-					productionStack.push(ruleFromTable[i]);
-				}*/
+				
+				for (size_t i = 1; i < ruleFromTable.size() + 1; i++) {
+					productionStack.push(static_cast<string>(ruleFromTable[i]));
+				}
 
 				
 			} else {
