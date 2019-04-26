@@ -11,9 +11,9 @@ using namespace std;
 
 
 struct tokenType {
-	string token; // token name for the lexeme
+	string token; // token name for the lexeme such as KEYWORD, IDENTIFIER, etc
 	int lexeme;
-	string lexemeName; // this prints out the actual lexeme character
+	string lexemeName; // this prints out the actual lexeme character such as int, a, double, cat
 
 };
 
