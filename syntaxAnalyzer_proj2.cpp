@@ -65,24 +65,25 @@ string ruleString(int i);
 char ruleNickName(string s);
 
 
+
 enum Symbols {
 	//TERMINAL SYMBOLS:
-	T_PLUS,			// +
-	T_MINUS,		// -
-	T_ASTER,		// *
-	T_DIVI,			// /
-	T_L_PARENS,		// (
-	T_R_PARENS,		// )
-	T_I,			// i
-	T_EOS,			// $
-	T_ERROR,
+	T_PLUS,			// +			0
+	T_MINUS,		// -			1
+	T_ASTER,		// *			2
+	T_DIVI,			// /			3
+	T_L_PARENS,		// (			4
+	T_R_PARENS,		// )			5
+	T_I,			// i			6
+	T_EOS,			// $			7
+	T_ERROR,		//				8
 
 	//NONTERMINAL SYMBOLS:
-	N_E,
-	N_Q,
-	N_T,
-	N_R,
-	N_F
+	N_E,			//				9			
+	N_Q,			//				10
+	N_T,			//				11
+	N_R,			//				12
+	N_F				//				13
 };
 
 Symbols translateSymbol(char c) {
@@ -172,45 +173,60 @@ using namespace std;
 int main() {
 	map <Symbols, map<Symbols, int>> table;
 	stack<Symbols> ss;	// symbol
-	string userString = test();
-	userString.push_back('$');
+	//string userString = test();
+	char userString [7]= "a + c ";
 	vector<tokenType> tokens = lexer(userString); // holds the lexed stringExp tokens[i].lexeme
 
-	char charPointer = 0;			// pointer for currentCharacter
+	userString[7] = T_EOS;
+	//userString.push_back(T_EOS);
 
+	char *charPointer = userString;			// input buffer
+	int tokenTrack = 0;
 	// initialize the symbols stack
 	ss.push(T_EOS); //initialize the stack with a $
 	ss.push(N_E);		//push the starting node in the stack 
 
 	//set up the parsing table
-	table[N_E][T_L_PARENS] = 0; // TQ
-	table[N_E][T_I] = 1;		// TQ
-	table[N_Q][T_PLUS] = 2;		// +TQ
-	table[N_Q][T_MINUS] = 3;	// -TQ
-	table[N_Q][T_R_PARENS] = 4; // EPSILON
-	table[N_Q][T_EOS] = 5;		// EPSILON
-	table[N_T][T_L_PARENS] = 6; // FR
-	table[N_T][T_I] = 7;		// FR
-	table[N_R][T_PLUS] = 8;		// EPSILON
-	table[N_R][T_MINUS] = 9;	// EPSILON
-	table[N_R][T_ASTER] = 10;	// *FR
-	table[N_R][T_DIVI] = 11;	// /FR
-	table[N_R][T_R_PARENS] = 12;// EPSILON
-	table[N_R][T_EOS] = 13;		// EPSILON
-	table[N_F][T_L_PARENS] = 14;// (E)
-	table[N_F][T_I] = 15;		// i
+	table[N_E][T_L_PARENS] = 0; // TQ			9 4
+	table[N_E][T_I] = 1;		// TQ			9 6
+	table[N_Q][T_PLUS] = 2;		// +TQ			10 0
+	table[N_Q][T_MINUS] = 3;	// -TQ			10 1
+	table[N_Q][T_R_PARENS] = 4; // EPSILON		10 5
+	table[N_Q][T_EOS] = 5;		// EPSILON		10 7
+	table[N_T][T_L_PARENS] = 6; // FR			11 4
+	table[N_T][T_I] = 7;		// FR			11 6
+	table[N_R][T_PLUS] = 8;		// EPSILON		12 0
+	table[N_R][T_MINUS] = 9;	// EPSILON		12 1
+	table[N_R][T_ASTER] = 10;	// *FR			12 2
+	table[N_R][T_DIVI] = 11;	// /FR			12 3
+	table[N_R][T_R_PARENS] = 12;// EPSILON		12 5
+	table[N_R][T_EOS] = 13;		// EPSILON		12 7
+	table[N_F][T_L_PARENS] = 14;// (E)			13 4
+	table[N_F][T_I] = 15;		// i			13 6
 
 	while (ss.size() > 0) {
 		//check if the top of the stack and the current character are equal to each other
 		//if so, increment the characterPointer and pop the stack
 
-		tokenType currentToken = tokens[charPointer];
+		tokenType currentToken = tokens[tokenTrack];
 		//pass the lexeme name to a function to convert identifiers to i char instead that way we can use translateSymbol()
 		
 		//translateSymbol(ruleNickName(currentToken.token))
-		if (translateSymbol(userString[charPointer]) == ss.top()) {	//meaning the top of the stack is a terminal as well
+		if (currentToken.lexemeName == "IDENTIFIER") {
+			if (translateSymbol('i') == ss.top()) {	//meaning the top of the stack is a terminal as well
+						// output the production rule
+				cout << ruleString(table[ss.top()][translateSymbol(*charPointer)]) << endl;
+
+				cout << "TOKENS: " << currentToken.lexemeName << "LEXME: " << currentToken.token << endl;
+				//output lexemename and tokenname
+
+				charPointer++;
+				ss.pop();
+			}
+		}
+		if (translateSymbol(*charPointer) == ss.top()) {	//meaning the top of the stack is a terminal as well
 			// output the production rule
-			cout << ruleString(table[ss.top()][translateSymbol(userString[charPointer])]) << endl;
+			cout << ruleString(table[ss.top()][translateSymbol(*charPointer)]) << endl;
 
 			cout << "TOKENS: " << currentToken.lexemeName << "LEXME: " << currentToken.token << endl;
 			//output lexemename and tokenname
@@ -220,9 +236,12 @@ int main() {
 		}
 		else {
 			//output the production rule
-			cout << ruleString(table[ss.top()][translateSymbol(userString[charPointer])]) << endl;
+			if (currentToken.lexemeName == "IDENTIFIER") {
+				cout << ruleString(table[ss.top()][translateSymbol('i')]) << endl;
+			}
+			cout << ruleString(table[ss.top()][translateSymbol(*charPointer)]) << endl;
 
-			switch (table[ss.top()][translateSymbol(userString[charPointer])])
+			switch (table[ss.top()][translateSymbol(*charPointer)])
 			{
 
 
@@ -280,7 +299,7 @@ int main() {
 
 			default:
 				cout << "You can't do that mate!" << endl;
-				return 0;
+				//return 0;
 				break;
 			}
 		}
