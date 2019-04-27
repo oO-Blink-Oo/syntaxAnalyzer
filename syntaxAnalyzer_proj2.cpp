@@ -182,7 +182,7 @@ int main() {
 	char userString [7] = "a + c ";
 	vector<tokenType> tokens = lexer(userString); // holds the lexed stringExp tokens[i].lexeme
 
-	userString[7] = T_EOS;
+	//userString[7] = T_EOS;
 	//userString.push_back(T_EOS);
 
 	char *charPointer = userString;			// input buffer
