@@ -192,127 +192,271 @@ int main() {
 	ss.push(N_E);		//push the starting node in the stack 
 
 	//set up the parsing table
-	table[N_E][T_L_PARENS] = 0; // TQ			9 4
+	table[N_E][T_L_PARENS] = 1; // TQ			9 4
 	table[N_E][T_I] = 1;		// TQ			9 6
 	table[N_Q][T_PLUS] = 2;		// +TQ			10 0
 	table[N_Q][T_MINUS] = 3;	// -TQ			10 1
 	table[N_Q][T_R_PARENS] = 4; // EPSILON		10 5
-	table[N_Q][T_EOS] = 5;		// EPSILON		10 7
-	table[N_T][T_L_PARENS] = 6; // FR			11 4
-	table[N_T][T_I] = 7;		// FR			11 6
+	table[N_Q][T_EOS] = 4;		// EPSILON		10 7
+	table[N_T][T_L_PARENS] = 5; // FR			11 4
+	table[N_T][T_I] = 5;		// FR			11 6
 	table[N_R][T_PLUS] = 8;		// EPSILON		12 0
-	table[N_R][T_MINUS] = 9;	// EPSILON		12 1
-	table[N_R][T_ASTER] = 10;	// *FR			12 2
-	table[N_R][T_DIVI] = 11;	// /FR			12 3
-	table[N_R][T_R_PARENS] = 12;// EPSILON		12 5
-	table[N_R][T_EOS] = 13;		// EPSILON		12 7
-	table[N_F][T_L_PARENS] = 14;// (E)			13 4
-	table[N_F][T_I] = 15;		// i			13 6
+	table[N_R][T_MINUS] = 8;	// EPSILON		12 1
+	table[N_R][T_ASTER] = 6;	// *FR			12 2
+	table[N_R][T_DIVI] = 7;		// /FR			12 3
+	table[N_R][T_R_PARENS] = 8; // EPSILON		12 5
+	table[N_R][T_EOS] = 8;		// EPSILON		12 7
+	table[N_F][T_L_PARENS] = 9; // (E)			13 4
+	table[N_F][T_I] = 10;		// i			13 6
 
 	while (ss.size() > 0) {
-		//check if the top of the stack and the current character are equal to each other
-		//if so, increment the characterPointer and pop the stack
-
 		tokenType currentToken = tokens[tokenTrack];
-		//pass the lexeme name to a function to convert identifiers to i char instead that way we can use translateSymbol()
-		
-		//translateSymbol(ruleNickName(currentToken.token))
-		if (currentToken.lexemeName == "IDENTIFIER") {
-			if (translateSymbol('i') == ss.top()) {	//meaning the top of the stack is a terminal as well
-						// output the production rule
-				cout << ruleString(table[ss.top()][translateSymbol(*charPointer)]) << endl;
 
-				cout << "TOKENS: " << currentToken.lexemeName << "LEXME: " << currentToken.token << endl;
-				//output lexemename and tokenname
+		if (translateSymbol(*charPointer) == ss.top()) { //if both are terminal
+			cout << "Token: " << currentToken.lexemeName << "Lexeme: " << currentToken.token << endl;
 
-				tokenTrack++;
-				charPointer++;
-				ss.pop();
-			}
-		}
-		if (translateSymbol(*charPointer) == ss.top()) {	//meaning the top of the stack is a terminal as well // return error because of default
-			// output the production rule
-			cout << ruleString(table[ss.top()][translateSymbol(*charPointer)]) << endl;
-
-			cout << "TOKENS: " << currentToken.lexemeName << "LEXME: " << currentToken.token << endl;
-			//output lexemename and tokenname
 			tokenTrack++;
 			charPointer++;
 			ss.pop();
 		}
 		else {
-			//output the production rule
+			//cout the rule
 			if (currentToken.lexemeName == "IDENTIFIER") {
 				cout << ruleString(table[ss.top()][translateSymbol('i')]) << endl;
-			} 
-			//cout << ruleString(table[ss.top()][translateSymbol(*charPointer)]) << endl; //////////PROBLEM
+				switch (table[ss.top()][translateSymbol('i')]) { //problem here is that *charPointer can point to an identifier such as 'a' or 'c' but those are not in our cases in translateSymbol
 
-			switch (table[ss.top()][translateSymbol(*charPointer)])
-			{
+				case 1:		// 0. E -> TQ
+					ss.pop();
+					ss.push(N_Q); //Q
+					ss.push(N_T); //T
+					break;
+				case 2:		// 1. Q -> +TQ
+					ss.pop();
+					ss.push(N_Q); //Q
+					ss.push(N_T); //T
+					ss.push(T_PLUS); //+
+					break;
+				case 3:		// 2. Q -> -TQ
+					ss.pop();
+					ss.push(N_Q); //Q
+					ss.push(N_T); //T
+					ss.push(T_MINUS); //-
+					break;
+				case 4:		// 3. Q -> Eps
+					ss.pop();
+					break;
+				case 5:		// 4. T -> FR
+					ss.pop();
+					ss.push(N_R);	// R
+					ss.push(N_F);	// F
+					break;
+				case 6:		// 5. R -> *FR
+					ss.pop();
+					ss.push(N_R);	 // R
+					ss.push(N_F);	 // F
+					ss.push(T_ASTER);// *
+					break;
+				case 7:		// 6. R -> /FR
+					ss.pop();
+					ss.push(N_R);	// R
+					ss.push(N_F);	// F
+					ss.push(T_DIVI); // /
+					break;
+				case 8:		// 7. R -> Eps
+					ss.pop();
+					break;
+				case 9:		// 8. F -> (E)
+					ss.pop();
+					ss.push(T_R_PARENS);	// )
+					ss.push(N_E);			// E
+					ss.push(T_L_PARENS);	// (
+					break;
+				case 10:		// 9. F -> i
+					ss.pop();
+					ss.push(T_I);
+					break;
 
+				default:
+					cout << "You can't do that mate!" << endl;
+					//return 0;
+					break;
+				}
 
-			case 0:		// 0. E -> TQ
-				ss.pop();
-				ss.push(N_E); //E
-				ss.push(N_Q); //Q
-				ss.push(N_T); //T
-				break;
-			case 1:		// 1. Q -> +TQ
-				ss.pop();
-				ss.push(N_Q); //Q
-				ss.push(N_Q); //Q
-				ss.push(N_T); //T
-				ss.push(T_PLUS); //+
-				break;
-			case 2:		// 2. Q -> -TQ
-				ss.pop();
-				ss.push(N_Q); //Q
-				ss.push(N_Q); //Q
-				ss.push(N_T); //T
-				ss.push(T_MINUS); //-
-				break;
-			case 3:		// 3. Q -> Eps
-				break;
-			case 4:		// 4. T -> FR
-				ss.pop();
-				ss.push(N_R);	// R
-				ss.push(N_F);	// F
-				break;
-			case 5:		// 5. R -> *FR
-				ss.pop();
-				ss.push(N_R);	 // R
-				ss.push(N_F);	 // F
-				ss.push(T_ASTER);// *
-				break;
-			case 6:		// 6. R -> /FR
-				ss.pop();
-				ss.push(N_R);	// R
-				ss.push(N_F);	// F
-				ss.push(T_DIVI); // /
-				break;
-			case 7:		// 7. R -> Eps
-				break;
-			case 8:		// 8. F -> (E)
-				ss.pop();
-				ss.push(T_R_PARENS);	// )
-				ss.push(N_E);			// E
-				ss.push(T_L_PARENS);	// (
-				break;
-			case 9:		// 9. F -> i
-				ss.pop();
-				ss.push(T_I);
-				break;
+			} else {
+				cout << ruleString(table[ss.top()][translateSymbol(*charPointer)]) << endl; //problem here is that *charPointer can point to an identifier such as 'a' or 'c' but those are not in our cases in translateSymbol
+				
+				switch (table[ss.top()][translateSymbol(*charPointer)]) { //problem here is that *charPointer can point to an identifier such as 'a' or 'c' but those are not in our cases in translateSymbol
 
-			default:
-				cout << "You can't do that mate!" << endl;
-				//return 0;
-				break;
+				case 1:		// 0. E -> TQ
+					ss.pop();
+					ss.push(N_E); //E
+					ss.push(N_Q); //Q
+					ss.push(N_T); //T
+					break;
+				case 2:		// 1. Q -> +TQ
+					ss.pop();
+					ss.push(N_Q); //Q
+					ss.push(N_Q); //Q
+					ss.push(N_T); //T
+					ss.push(T_PLUS); //+
+					break;
+				case 3:		// 2. Q -> -TQ
+					ss.pop();
+					ss.push(N_Q); //Q
+					ss.push(N_Q); //Q
+					ss.push(N_T); //T
+					ss.push(T_MINUS); //-
+					break;
+				case 4:		// 3. Q -> Eps
+					ss.pop();
+					break;
+				case 5:		// 4. T -> FR
+					ss.pop();
+					ss.push(N_R);	// R
+					ss.push(N_F);	// F
+					break;
+				case 6:		// 5. R -> *FR
+					ss.pop();
+					ss.push(N_R);	 // R
+					ss.push(N_F);	 // F
+					ss.push(T_ASTER);// *
+					break;
+				case 7:		// 6. R -> /FR
+					ss.pop();
+					ss.push(N_R);	// R
+					ss.push(N_F);	// F
+					ss.push(T_DIVI); // /
+					break;
+				case 8:		// 7. R -> Eps
+					ss.pop();
+					break;
+				case 9:		// 8. F -> (E)
+					ss.pop();
+					ss.push(T_R_PARENS);	// )
+					ss.push(N_E);			// E
+					ss.push(T_L_PARENS);	// (
+					break;
+				case 10:		// 9. F -> i
+					ss.pop();
+					ss.push(T_I);
+					break;
+
+				default:
+					cout << "You can't do that mate!" << endl;
+					//return 0;
+					break;
+				}
 			}
+			
+			
+			
 		}
 	}
+	
 
 	cout << "PRINT HERE WHEN DONE" << endl;
 
 	return 0;
 }
 
+//while (ss.size() > 0) {
+//	//check if the top of the stack and the current character are equal to each other
+//	//if so, increment the characterPointer and pop the stack
+//
+//	tokenType currentToken = tokens[tokenTrack];
+//	//pass the lexeme name to a function to convert identifiers to i char instead that way we can use translateSymbol()
+//
+//	//translateSymbol(ruleNickName(currentToken.token))
+//	if (currentToken.lexemeName == "IDENTIFIER") {
+//		if (translateSymbol('i') == ss.top()) {	//meaning the top of the stack is a terminal as well
+//					// output the production rule
+//			cout << ruleString(table[ss.top()][translateSymbol(*charPointer)]) << endl;
+//
+//			cout << "TOKENS: " << currentToken.lexemeName << "LEXME: " << currentToken.token << endl;
+//			//output lexemename and tokenname
+//
+//			tokenTrack++;
+//			charPointer++;
+//			ss.pop();
+//		}
+//	}
+//	if (translateSymbol(*charPointer) == ss.top()) {	//meaning the top of the stack is a terminal as well // return error because of default
+//		// output the production rule
+//		cout << ruleString(table[ss.top()][translateSymbol(*charPointer)]) << endl;
+//
+//		cout << "TOKENS: " << currentToken.lexemeName << "LEXME: " << currentToken.token << endl;
+//		//output lexemename and tokenname
+//		tokenTrack++;
+//		charPointer++;
+//		ss.pop();
+//	}
+//	else {
+//		//output the production rule
+//		if (currentToken.lexemeName == "IDENTIFIER") {
+//			cout << ruleString(table[ss.top()][translateSymbol('i')]) << endl;
+//		}
+//		cout << ruleString(table[ss.top()][translateSymbol(*charPointer)]) << endl; //////////PROBLEM
+//
+//		switch (table[ss.top()][translateSymbol(*charPointer)])
+//		{
+//
+//
+//		case 0:		// 0. E -> TQ
+//			ss.pop();
+//			ss.push(N_E); //E
+//			ss.push(N_Q); //Q
+//			ss.push(N_T); //T
+//			break;
+//		case 1:		// 1. Q -> +TQ
+//			ss.pop();
+//			ss.push(N_Q); //Q
+//			ss.push(N_Q); //Q
+//			ss.push(N_T); //T
+//			ss.push(T_PLUS); //+
+//			break;
+//		case 2:		// 2. Q -> -TQ
+//			ss.pop();
+//			ss.push(N_Q); //Q
+//			ss.push(N_Q); //Q
+//			ss.push(N_T); //T
+//			ss.push(T_MINUS); //-
+//			break;
+//		case 3:		// 3. Q -> Eps
+//			break;
+//		case 4:		// 4. T -> FR
+//			ss.pop();
+//			ss.push(N_R);	// R
+//			ss.push(N_F);	// F
+//			break;
+//		case 5:		// 5. R -> *FR
+//			ss.pop();
+//			ss.push(N_R);	 // R
+//			ss.push(N_F);	 // F
+//			ss.push(T_ASTER);// *
+//			break;
+//		case 6:		// 6. R -> /FR
+//			ss.pop();
+//			ss.push(N_R);	// R
+//			ss.push(N_F);	// F
+//			ss.push(T_DIVI); // /
+//			break;
+//		case 7:		// 7. R -> Eps
+//			break;
+//		case 8:		// 8. F -> (E)
+//			ss.pop();
+//			ss.push(T_R_PARENS);	// )
+//			ss.push(N_E);			// E
+//			ss.push(T_L_PARENS);	// (
+//			break;
+//		case 9:		// 9. F -> i
+//			ss.pop();
+//			ss.push(T_I);
+//			break;
+//
+//		default:
+//			cout << "You can't do that mate!" << endl;
+//			//return 0;
+//			break;
+//		}
+//	}
+//}
