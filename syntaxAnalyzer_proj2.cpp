@@ -121,38 +121,42 @@ string ruleString(int i) {
 		return rule;
 		break;
 	case 1:
-		rule = "Q -> +TQ";
+		rule = "E -> TQ";
 		return rule;
 		break;
 	case 2:
-		rule = "Q -> -TQ";
+		rule = "Q -> +TQ";
 		return rule;
 		break;
 	case 3:
-		rule = "Q -> Eps";
+		rule = "Q -> -TQ";
 		return rule;
 		break;
 	case 4:
-		rule = "T -> FR";
+		rule = "Q -> Eps";
 		return rule;
 		break;
 	case 5:
-		rule = "R -> *FR";
+		rule = "T -> FR";
 		return rule;
 		break;
 	case 6:
-		rule = "R -> /FR";
+		rule = "R -> *FR";
 		return rule;
 		break;
 	case 7:
-		rule = "R -> Eps";
+		rule = "R -> /FR";
 		return rule;
 		break;
 	case 8:
-		rule = "F -> (E)";
+		rule = "R -> Eps";
 		return rule;
 		break;
 	case 9:
+		rule = "F -> (E)";
+		return rule;
+		break;
+	case 10:
 		rule = "F -> i";
 		return rule;
 		break;
@@ -175,10 +179,10 @@ int main() {
 	map <Symbols, map<Symbols, int>> table;
 	stack<Symbols> ss;	// symbol
 	//string userString = test();
-	char userString [] = "a + c ";
+	char userString [7] = "a + c ";
 	vector<tokenType> tokens = lexer(userString); // holds the lexed stringExp tokens[i].lexeme
 
-	//userString[7] = T_EOS;
+	userString[7] = T_EOS;
 	//userString.push_back(T_EOS);
 
 	char *charPointer = userString;			// input buffer
@@ -226,7 +230,7 @@ int main() {
 				ss.pop();
 			}
 		}
-		if (translateSymbol(*charPointer) == ss.top()) {	//meaning the top of the stack is a terminal as well
+		if (translateSymbol(*charPointer) == ss.top()) {	//meaning the top of the stack is a terminal as well // return error because of default
 			// output the production rule
 			cout << ruleString(table[ss.top()][translateSymbol(*charPointer)]) << endl;
 
@@ -240,8 +244,8 @@ int main() {
 			//output the production rule
 			if (currentToken.lexemeName == "IDENTIFIER") {
 				cout << ruleString(table[ss.top()][translateSymbol('i')]) << endl;
-			}
-			cout << ruleString(table[ss.top()][translateSymbol(*charPointer)]) << endl;
+			} 
+			//cout << ruleString(table[ss.top()][translateSymbol(*charPointer)]) << endl; //////////PROBLEM
 
 			switch (table[ss.top()][translateSymbol(*charPointer)])
 			{
