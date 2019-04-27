@@ -96,9 +96,10 @@ Symbols translateSymbol(char c) {
 	case '(': return T_L_PARENS;
 	case ')': return T_R_PARENS;
 	case 'i': return T_I;
-	case '$': return T_EOS;
+	case '\0': return T_EOS;
 
 	default:
+		return T_ERROR;
 		break;
 	}
 }
@@ -174,10 +175,10 @@ int main() {
 	map <Symbols, map<Symbols, int>> table;
 	stack<Symbols> ss;	// symbol
 	//string userString = test();
-	char userString [7]= "a + c ";
+	char userString [] = "a + c ";
 	vector<tokenType> tokens = lexer(userString); // holds the lexed stringExp tokens[i].lexeme
 
-	userString[7] = T_EOS;
+	//userString[7] = T_EOS;
 	//userString.push_back(T_EOS);
 
 	char *charPointer = userString;			// input buffer
@@ -220,6 +221,7 @@ int main() {
 				cout << "TOKENS: " << currentToken.lexemeName << "LEXME: " << currentToken.token << endl;
 				//output lexemename and tokenname
 
+				tokenTrack++;
 				charPointer++;
 				ss.pop();
 			}
@@ -230,7 +232,7 @@ int main() {
 
 			cout << "TOKENS: " << currentToken.lexemeName << "LEXME: " << currentToken.token << endl;
 			//output lexemename and tokenname
-			
+			tokenTrack++;
 			charPointer++;
 			ss.pop();
 		}
