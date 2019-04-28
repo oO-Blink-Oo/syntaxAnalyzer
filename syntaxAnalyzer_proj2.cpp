@@ -249,8 +249,10 @@ int main() {
 	map <Symbols, map<Symbols, int>> table;
 	stack<Symbols> ss;	// symbol
 	//string userString = test();
-	char userString [7] = "a + c ";
+	char userString [] = "a + c ";
 	vector<tokenType> tokens = lexer(userString); // holds the lexed stringExp tokens[i].lexeme
+
+	int stringSize = tokens.size() - 1; //this will change if we are testing a different string
 
 	//userString[7] = T_EOS;
 	//userString.push_back(T_EOS);
@@ -279,7 +281,10 @@ int main() {
 	table[N_F][T_L_PARENS] = 9; // (E)			13 4
 	table[N_F][T_I] = 10;		// i			13 6
 
+	   
+
 	while (ss.size() > 0) {
+		
 		tokenType currentToken = tokens[tokenTrack];
 
 		//if (translateSymbol(*charPointer) == ss.top()) { //if both are terminal
@@ -293,15 +298,22 @@ int main() {
 		if (translateSymbol(*charPointer) == ss.top() || translateSymbol(ruleNickName(currentToken.lexemeName)) == ss.top()) { //if both are terminal
 			cout << "Token: " << currentToken.lexemeName << "\tLexeme: " << currentToken.token << endl;
 
-			tokenTrack++;
+			if (tokenTrack < stringSize) {
+				tokenTrack++;
+			}
+			else {
+				tokenTrack -= 1;
+			}
+			
 			charPointer++;
 			if (*charPointer == ' ') {
 				charPointer++;
 			}
+			
 			ss.pop();
 		}
 		else {
-			//cout the rule
+			//switch for when the token is an identifier
 			if (currentToken.lexemeName == "IDENTIFIER") {
 				cout << ruleString(table[ss.top()][translateSymbol('i')]) << endl;
 				switch (table[ss.top()][translateSymbol('i')]) { //problem here is that *charPointer can point to an identifier such as 'a' or 'c' but those are not in our cases in translateSymbol
@@ -363,7 +375,7 @@ int main() {
 					break;
 				}
 
-			} else {
+			} else { //switch for regualr characters
 				cout << ruleString(table[ss.top()][translateSymbol(*charPointer)]) << endl; //problem here is that *charPointer can point to an identifier such as 'a' or 'c' but those are not in our cases in translateSymbol
 				
 				switch (table[ss.top()][translateSymbol(*charPointer)]) { //problem here is that *charPointer can point to an identifier such as 'a' or 'c' but those are not in our cases in translateSymbol
@@ -435,7 +447,7 @@ int main() {
 	}
 	
 
-	cout << "PRINT HERE WHEN DONE" << endl;
+	cout << "\n\nThis was to only test the arithmetic operations. We hard coded the string that was being tested which was \"a + c \". \n " << "Syntax Analysis Team:\nIan Michael Jesu Alvarez\nFrancis Nguyen\nFrank Young" << endl;
 
 	return 0;
 }
