@@ -104,6 +104,8 @@ Symbols translateSymbol(char c) {
 	}
 }
 
+char numToChar(Symbols n);
+
 string test() {
 	string userInput;
 	cout << "Please input a string to be tested for syntax analysis.\n";
@@ -173,6 +175,74 @@ char ruleNickName(string s) {
 	}
 }
 
+char numToChar(Symbols n) {
+	char conversion = ' ';
+	switch (n){
+	case T_PLUS:
+		conversion = '+';
+		return conversion;
+		break;
+	case T_MINUS:
+		conversion = '-';
+		return conversion;
+		break;
+	case T_ASTER:
+		conversion = '*';
+		return conversion;
+		break;
+	case T_DIVI:
+		conversion = '/';
+		return conversion;
+		break;
+	case T_L_PARENS:
+		conversion = '(';
+		return conversion;
+		break;
+	case T_R_PARENS:
+		conversion = ')';
+		return conversion;
+		break;
+	case T_I:
+		conversion = 'i';
+		return conversion;
+		break;
+	case T_EOS:
+		conversion = '\0';
+		return conversion;
+		break;
+	case T_ERROR:
+		conversion = 'X';
+		return conversion;
+		break;
+	case N_E:
+		conversion = 'E';
+		return conversion;
+		break;
+	case N_Q:
+		conversion = 'Q';
+		return conversion;
+		break;
+	case N_T:
+		conversion = 'T';
+		return conversion;
+		break;
+	case N_R:
+		conversion = 'R';
+		return conversion;
+		break;
+		conversion = '+';
+		return conversion;
+	case N_F:
+		conversion = 'F';
+		return conversion;
+		break;
+	default:
+		conversion = '^';
+		return conversion;
+		break;
+	}
+
+} 
 using namespace std;
 
 int main() {
@@ -212,11 +282,22 @@ int main() {
 	while (ss.size() > 0) {
 		tokenType currentToken = tokens[tokenTrack];
 
-		if (translateSymbol(*charPointer) == ss.top()) { //if both are terminal
-			cout << "Token: " << currentToken.lexemeName << "Lexeme: " << currentToken.token << endl;
+		//if (translateSymbol(*charPointer) == ss.top()) { //if both are terminal
+		//	cout << "Token: " << currentToken.lexemeName << "Lexeme: " << currentToken.token << endl;
+
+		//	tokenTrack++;
+		//	charPointer++;
+		//	ss.pop();
+		//}
+
+		if (translateSymbol(*charPointer) == ss.top() || translateSymbol(ruleNickName(currentToken.lexemeName)) == ss.top()) { //if both are terminal
+			cout << "Token: " << currentToken.lexemeName << "\tLexeme: " << currentToken.token << endl;
 
 			tokenTrack++;
 			charPointer++;
+			if (*charPointer == ' ') {
+				charPointer++;
+			}
 			ss.pop();
 		}
 		else {
