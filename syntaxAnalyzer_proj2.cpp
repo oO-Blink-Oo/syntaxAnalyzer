@@ -296,7 +296,10 @@ int main() {
 		//}
 
 		if (translateSymbol(*charPointer) == ss.top() || translateSymbol(ruleNickName(currentToken.lexemeName)) == ss.top()) { //if both are terminal
-			cout << "Token: " << currentToken.lexemeName << "\tLexeme: " << currentToken.token << endl;
+
+			if (*charPointer != '\0') {
+				cout << "Token: " << currentToken.lexemeName << "\tLexeme: " << currentToken.token << endl;
+			}
 
 			if (tokenTrack < stringSize) {
 				tokenTrack++;
@@ -440,15 +443,12 @@ int main() {
 					break;
 				}
 			}
-			
-			
-			
 		}
 	}
-	
 
-	cout << "\n\nThis was to only test the arithmetic operations. We hard coded the string that was being tested which was \"a + c \". \n " << "Syntax Analysis Team:\nIan Michael Jesu Alvarez\nFrancis Nguyen\nFrank Young" << endl;
-
+	cout << "\n\nThis was to only test the arithmetic operations. We hard coded the string that was being tested which was \"a + c \". \n " << "\n\nSyntax Analysis Team:\nIan Michael Jesu Alvarez\nFrancis Nguyen\nFrank Young (Section 4, MW 5:30, ID: 889546446)" << endl;
+	cout << "\nEverything should be working accordingly to the specifications except for one problem where the syntax analyzer would print out extra rules after the end of the analysis" << endl;
+	cout << "The extra rules that are printing out at the end are the epsilon cases  Q -> Eps, R -> Eps" << endl;
 	return 0;
 }
 
